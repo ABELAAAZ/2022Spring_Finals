@@ -14,17 +14,24 @@ import seaborn as sns
 from scipy.stats import pearsonr
 
 
-# In[2]:
 
 
 def getDataFrame(url):
+    """
+    This function aims to download data from the website throng API
+    :param url: the url of the dataset
+    :return: Returning data as a dataframe
+
+    >>> shape(getDataFrame('https://ghoapi.azureedge.net/api/WHOSIS_000002'))[0]
+    0
+
+    """
     data = requests.get(url).json()
     data = data['value']
     data = pd.DataFrame(data)
     return data
 
 
-# In[3]:
 
 
 def Integrity_Check(df):
