@@ -231,6 +231,7 @@ def Topcause_year(dataset: pd.DataFrame, year: int, income_group: str = 'All', c
     plt.title('10 leading disease\n income group=' + income_group + ', Mortality type=' + category)
     plt.xlabel('Disease')
     plt.ylabel('Number of death')
+    plt.figure(figsize=(20,20))
     plt.show()
     return df
 
