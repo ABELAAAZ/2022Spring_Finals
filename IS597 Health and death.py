@@ -328,6 +328,7 @@ def effectOfexp2015before(data, col, region):
     if region not in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                       'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         return
+    data = data.copy().astype({"Year":int})
     cleaned = data.loc[
         (data["Year"] == 2000) | (data["Year"] == 2001) | (data["Year"] == 2002) | (data["Year"] == 2003) | (
                 data["Year"] == 2004) | (data["Year"] == 2005) | (data["Year"] == 2006) | (data["Year"] == 2007) | (
@@ -345,6 +346,7 @@ def effectOfexp2015after(data, col, region):
     :param region: one of the region
     :return: coefficient, pvalue
     """
+    data = data.copy().astype({"Year":int})
     if region in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                   'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         cleaned = data.loc[
@@ -357,16 +359,8 @@ def effectOfexp2015after(data, col, region):
         return
 
 
-
-
 if __name__ == '__main__':
-
-    LifeExpectancy_1 = getDataFrame('https://ghoapi.azureedge.net/api/WHOSIS_000001')
-    Under5_Mortality_1 = getDataFrame('https://ghoapi.azureedge.net/api/MDG_0000000007')
-    MaternalMortalityRatio_1 = getDataFrame('https://ghoapi.azureedge.net/api/MDG_0000000026')
-    global_data = getDataFrame(
-        'https://frontdoor-l4uikgap6gz3m.azurefd.net/DEX_CMS/GHE_FULL?&$orderby=VAL_DEATHS_RATE100K_NUMERIC%20desc&$select=DIM_COUNTRY_CODE,DIM_GHECAUSE_CODE,DIM_GHECAUSE_TITLE,DIM_YEAR_CODE,DIM_SEX_CODE,DIM_AGEGROUP_CODE,VAL_DALY_COUNT_NUMERIC,VAL_DEATHS_COUNT_NUMERIC,ATTR_POPULATION_NUMERIC,VAL_DALY_RATE100K_NUMERIC,VAL_DEATHS_RATE100K_NUMERIC&$filter=FLAG_RANKABLE%20eq%201%20and%20DIM_SEX_CODE%20eq%20%27BTSX%27%20and%20DIM_AGEGROUP_CODE%20eq%20%27ALLAges%27')
-
+    # Hypothesis 1 block
     incomegroup = pd.read_excel("datasources/income group.xlsx", sheet_name='Sheet1')
     region = pd.read_csv("datasources/country_region.csv")[['Country', 'Region']]
     healthExp = pd.read_excel("datasources/healthExp_data.xlsx", sheet_name='cleaned')
@@ -381,17 +375,10 @@ if __name__ == '__main__':
     # merge datasets based on two columns:
     countryInfo = incomegroup.merge(region, left_on='CountryName', right_on='Country')
     countryInfo = countryInfo[['Country', 'CountryCode', 'Region', 'Year', 'incomeGroup']]
-    countryInfoAll = countryInfo.merge(healthExp, left_on=['Country', 'Year'], right_on=['country', 'year'])
-    countryInfoAll = countryInfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp']]
-    countryInfoAll = countryInfoAll.astype({"Year":int})
-    # reformatting data set for further analysis
-    Under5_Mortality = formatWithSex('Under5_Mortality', Under5_Mortality_1)
-    LifeExpectancy = formatWithSex('LifeExpectancy', LifeExpectancy_1)
-    MaternalMortalityRatio = formatWithoutSex(MaternalMortalityRatio_1)
-    InfoAll = countryInfoAll.merge(LifeExpectancy, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
-    InfoAll = InfoAll.merge(Under5_Mortality, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'], how='left')
-    InfoAll = InfoAll.merge(MaternalMortalityRatio, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
-    InfoAll = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX','LifeExpectancy_FMLE', 'LifeExpectancy_MLE', 'Under5_Mortality_BTSX', 'Under5_Mortality_FMLE','Under5_Mortality_MLE', 'MaternalMortalityRatio']]
+
+    global_data = getDataFrame(
+        'https://frontdoor-l4uikgap6gz3m.azurefd.net/DEX_CMS/GHE_FULL?&$orderby=VAL_DEATHS_RATE100K_NUMERIC%20desc&$select=DIM_COUNTRY_CODE,DIM_GHECAUSE_CODE,DIM_GHECAUSE_TITLE,DIM_YEAR_CODE,DIM_SEX_CODE,DIM_AGEGROUP_CODE,VAL_DALY_COUNT_NUMERIC,VAL_DEATHS_COUNT_NUMERIC,ATTR_POPULATION_NUMERIC,VAL_DALY_RATE100K_NUMERIC,VAL_DEATHS_RATE100K_NUMERIC&$filter=FLAG_RANKABLE%20eq%201%20and%20DIM_SEX_CODE%20eq%20%27BTSX%27%20and%20DIM_AGEGROUP_CODE%20eq%20%27ALLAges%27')
+
 
 
     global_data_1 = global_data.rename(columns={"DIM_COUNTRY_CODE": "countryCode",
@@ -489,6 +476,41 @@ if __name__ == '__main__':
     print(Topcause_year(global_data_1, 2004))
     print(Topcause_year(global_data_1, 2004, income_group='L', category='noncommunicable'))
 
+    ###########################
+    # Hypothesis 2 block:
+    ###########################
+    # table initialization
+    incomegroup = pd.read_excel("datasources/income group.xlsx", sheet_name='Sheet1')
+    region = pd.read_csv("datasources/country_region.csv")[['Country', 'Region']]
+    healthExp = pd.read_excel("datasources/healthExp_data.xlsx", sheet_name='cleaned')
+    healthExp = healthExp[['country', 'year', 'che_gdp']]
+
+    incomegroup = pd.melt(incomegroup, id_vars=['CountryCode', 'CountryName'],
+                          value_vars=[2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
+                                      2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], var_name='Year',
+                          value_name='incomeGroup')
+    # left join with region table.
+
+    # merge datasets based on two columns:
+    countryInfo = incomegroup.merge(region, left_on='CountryName', right_on='Country')
+    countryInfo = countryInfo[['Country', 'CountryCode', 'Region', 'Year', 'incomeGroup']]
+
+
+
+    LifeExpectancy_1 = getDataFrame('https://ghoapi.azureedge.net/api/WHOSIS_000001')
+    Under5_Mortality_1 = getDataFrame('https://ghoapi.azureedge.net/api/MDG_0000000007')
+    MaternalMortalityRatio_1 = getDataFrame('https://ghoapi.azureedge.net/api/MDG_0000000026')
+
+
+    countryInfoAll = countryInfo.merge(healthExp, left_on=['Country', 'Year'], right_on=['country', 'year'])
+    countryInfoAll = countryInfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp']]
+    countryInfoAll = countryInfoAll.astype({"Year":str})
+    # reformatting data set for further analysis
+    Under5_Mortality = formatWithSex('Under5_Mortality', Under5_Mortality_1)
+    LifeExpectancy = formatWithSex('LifeExpectancy', LifeExpectancy_1)
+    MaternalMortalityRatio = formatWithoutSex(MaternalMortalityRatio_1)
+    InfoAll = countryInfoAll.merge(LifeExpectancy, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
+    InfoAll = InfoAll.astype({"Year":int})
     # Hypothesis 2
     # finding: the life expectancy is increasing over years
     lineplot_time(LifeExpectancy_1)
@@ -503,17 +525,17 @@ if __name__ == '__main__':
     sns.set(rc={"figure.figsize": (3, 4)})
     plt.show()
 
-
     # all data includes health expendure, three factors, year, incomegroup, and region for each country
     # anova table shows that all three factors were related to health expenditure, of which the region has the most significant correlation
     # Ordinary Least Squares (OLS) model
-    model = ols('che_gdp ~ Year+incomeGroup+Region', data=InfoAll).fit()
+    model = ols('che_gdp ~ Year+incomeGroup+Region',
+                data=InfoAll.astype({"Year":str})).fit()
     anova_table = sm.stats.anova_lm(model, typ=2)
     anova_table
 
     # correlation between independent Year and dependent var = che_gdp in Year 2019
     yearexp = InfoAll[['che_gdp', 'Year']].dropna()
-    pearsonr(yearexp['che_gdp'], yearexp['Year'])
+    pearsonr(yearexp['che_gdp'], yearexp['Year'].astype({"Year":int}))
 
     # health expenditure per region per year
     InfoAll2015_ = InfoAll.loc[(InfoAll["Year"] == 2015) | (InfoAll["Year"] == 2016) | (InfoAll["Year"] == 2017) | (
@@ -523,7 +545,8 @@ if __name__ == '__main__':
     d = d.pivot_table(index='Region', columns='Year', values='che_gdp', aggfunc='mean')
     print(d)
 
-    # generate a boxplot to see the health expenditure distribution by income groups. Using boxplot, we can easily detect the differences between income groups
+    # generate a boxplot to see the health expenditure distribution by income groups. Using boxplot, we can easily
+    # detect the differences between income groups
     # CAN is only country in North America
     plt.figure(figsize=(16, 8))
     ax = sns.boxplot(x='Region', y='che_gdp', data=InfoAll[InfoAll['Year'] == 2019], color='#99c2a2')
@@ -535,7 +558,10 @@ if __name__ == '__main__':
 
     # life Expectancy recorded data every five year. 2010, 2015, 2000, 2019.
     # drop nan before calculating correlation
-
+    InfoAll = InfoAll.astype({"Year":str})
+    InfoAll = InfoAll.merge(Under5_Mortality, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'], how='left')
+    InfoAll = InfoAll.merge(MaternalMortalityRatio, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
+    InfoAll = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX','LifeExpectancy_FMLE', 'LifeExpectancy_MLE', 'Under5_Mortality_BTSX', 'Under5_Mortality_FMLE','Under5_Mortality_MLE', 'MaternalMortalityRatio']]
     lifeExp_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX']].dropna()
     Under5_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'Under5_Mortality_BTSX']].dropna()
     MaternalMortality_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'MaternalMortalityRatio']].dropna()
