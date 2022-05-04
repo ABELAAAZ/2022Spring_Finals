@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[1]:
-
-
 import requests
 import pandas as pd
 import numpy as np
@@ -23,7 +21,7 @@ def getDataFrame(url: str) -> pd.DataFrame:
       >>> getDataFrame('https://ghoapi.azureedge.net/api/WHOSIS_000002').shape[0]
       2328
 
-      """
+    """
     data = requests.get(url).json()
     data = data['value']
     data = pd.DataFrame(data)
@@ -35,7 +33,7 @@ def Integrity_Check(df: pd.DataFrame):
        This function aims to give an overview of the dataframe.
 
        :param df: the dataframe that will be checked
-       """
+    """
     print('Is there any null value in the dataset')
     print(df.isna().all().all())
     print('Every year has all country data?')
@@ -63,7 +61,7 @@ def world_mortality_trend(all_data: pd.DataFrame) -> pd.DataFrame:
     >>> df_after=world_mortality_trend(df)
     >>> round(df_after.loc[df_after['year'] == 2017,'death_per1000']).tolist()
     [4.0]
-        """
+    """
     worldly_mortality_trend = all_data.groupby(['year', 'countryCode'], as_index=False)[['population', 'deathNum']].agg(
         {'population': np.max, 'deathNum': np.sum})
     worldly = worldly_mortality_trend.groupby(['year'], as_index=False)[['population', 'deathNum']].agg(
@@ -158,15 +156,20 @@ def deathtypetrend(dataset: pd.DataFrame, income_group: str = 'ALL') -> pd.DataF
     >>> test_data = [['HTI',2015,9949318,211608,'L','noncommunicable'],['HTI',2015,9949318,211300,'L','communicable'],['HTI',2015,9949318,300956,'L','Injuries'],['LSO',2015,2018355,98354,'L','noncommunicable'],['LSO',2016,2018355,95603,'L','communicable'],['LSO',2017,2018355,73283,'L','Injuries'],['BWA',2015,1734387,15560,'H','noncommunicable'],['BWA',2015,1775969,11247,'H','communicable'],['BWA',2015,1799472,79852,'H','Injuries']]
     >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup','mortality_type'])
     >>> df_after_ALL=deathtypetrend(df)
-    >>> df_after_ALL
+    >>> df_after_ALL.query('year == 2015').values
+    array([[32.41252929, 18.98008978, 23.75715768]])
+
+    >>> df_after_ALL=deathtypetrend(df,'L')
+    >>> df_after_ALL.query('year == 2015').values
+    array([[30.24890751, 21.23763659, 25.89993894]])
     """
 
     if income_group == 'ALL':
-        incomegroup = ['..', 'H', 'L', 'UM', 'LM']
+        income_Group = ['..', 'H', 'L', 'UM', 'LM']
     else:
-        incomegroup = [income_group]
+        income_Group = [income_group]
     causebyincome = \
-        dataset[dataset['incomeGroup'].isin(incomegroup)].sort_values(['deathNum'], ascending=False).groupby(
+        dataset[dataset['incomeGroup'].isin(income_Group)].sort_values(['deathNum'], ascending=False).groupby(
             ['year', 'mortality_type', 'countryCode'], as_index=False)[['population', 'deathNum']].agg(
             {'population': np.max, 'deathNum': np.sum})
 
@@ -195,6 +198,17 @@ def Topcause_year(dataset: pd.DataFrame, year: int, income_group: str = 'All', c
     :param category: one of three Mortality types(communicable,noncommunicable,Injuries)
     :return: the dataframe after selection and groupby...
 
+    >>> test_data = [['HTI',2015,9949318,211608,'L','communicable','a'],['HTI',2015,9949318,211300,'L','communicable','b'],['HTI',2015,9949318,300956,'L','Injuries','c'],['LSO',2015,2018355,98354,'L','communicable','a'],['LSO',2016,2018355,95603,'L','communicable','b'],['LSO',2017,2018355,73283,'L','Injuries','c'],['BWA',2015,1734387,15560,'H','communicable','a'],['BWA',2015,1775969,11247,'H','communicable','b'],['BWA',2015,1799472,79852,'H','Injuries','c']]
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup','mortality_type','diseaseName'])
+    >>> df_after_ALL=Topcause_year(df,2015)
+    >>> df_after_ALL['diseaseName'].head(1).tolist()
+    ['c']
+    >>> df_after_Low=Topcause_year(df,2015,income_group='L')
+    >>> df_after_Low['diseaseName'].head(1).tolist()
+    ['a']
+    >>> df_after_High_comm=Topcause_year(df,2015,income_group='H',category='Injuries')
+    >>> df_after_High_comm['diseaseName'].head(1).tolist()
+    ['c']
 
     """
     if income_group == 'All':
@@ -232,6 +246,24 @@ def Topcause_trend(dataset: pd.DataFrame, year: int, income_group: str = 'All', 
     :param category: one of three Mortality types(communicable,noncommunicable,Injuries)
     :return: the dataframe after selection and groupby...
 
+    >>> test_data = [['HTI',2015,9949318,211608,'L','communicable','a'],['HTI',2016,9949318,211300,'L','communicable','a'],['HTI',2015,9949318,300956,'L','Injuries','c'],['LSO',2016,2018355,98354,'L','communicable','a'],['LSO',2016,2018355,95603,'L','communicable','b'],['LSO',2015,2018355,73283,'L','Injuries','c'],['BWA',2015,1734387,15560,'H','communicable','d'],['BWA',2016,1775969,11247,'H','communicable','b'],['BWA',2015,1799472,79852,'H','Injuries','c']]
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup','mortality_type','diseaseName'])
+    >>> df_after_ALL=Topcause_trend(df,2015)
+    >>> df_after_ALL.query('year==2015')['a'].values
+    array([21.26859349])
+    >>> df_after_ALL.query('year==2015')['d'].values
+    array([8.97146946])
+    >>> df_after_Low=Topcause_trend(df,2015,income_group='L')
+    >>> df_after_Low.query('year==2015')['d'].values
+    Traceback (most recent call last):
+    KeyError: 'd'
+    >>> df_after_Low.query('year==2016')['a'].values
+    array([25.87420295])
+
+    >>> df_after_comm=Topcause_trend(df,2015,category='communicable')
+    >>> df_after_comm.query('year ==2015')[['b','c']].values
+    Traceback (most recent call last):
+    KeyError: "None of [Index(['b', 'c'], dtype='object', name='diseaseName')] are in the [columns]"
     """
     top10cause = Topcause_year(dataset, year, income_group, category)
     disease_list = list(top10cause['diseaseName'])
@@ -468,26 +500,9 @@ if __name__ == '__main__':
     print('\n\nUpper-middle income leading specific disease\n\n', Topcause_year(global_data_1, 2004, income_group='UM'))
     print('\n\nHigh income leading specific disease\n\n', Topcause_year(global_data_1, 2004, income_group='H'))
 
-    '''As may be expected from the very different distributions of deaths by
-    age and sex, there are major differences in the ranking of causes
-    between high- and low-income countries (Table 4). In low-income
-    countries, the dominant causes are infectious and parasitic diseases
-    (including malaria), and neonatal causes. In the high-income countries,
-    9 of the 10 leading causes of death are non-communicable conditions,
-    including the four types of cancer. In the middle-income countries, the
-    10 leading causes of death are again dominated by non-communicable
-    conditions; they also include road traffic accidents as the sixth most
-    common cause.'''
-
-    # In[39]:
 
     Topcause_trend(global_data_1, 2004, income_group='L', category='communicable')
-
-    # In[40]:
-
     Topcause_trend(global_data_1, 2005, income_group='UM', category='noncommunicable')
-
-    # In[41]:
 
     print(Topcause_year(global_data_1, 2004))
     print(Topcause_year(global_data_1, 2004, income_group='L', category='noncommunicable'))
