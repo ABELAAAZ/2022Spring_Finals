@@ -29,7 +29,7 @@ Middle East & North Africa; Middle East & North Africa; South Asia; Sub-Saharan 
 # Short description of the problem solved
 The big topic is health-related, from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
 
-## Data source:
+## Data sources:
 1. Global cause of death   
 API:https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates/ghe-leading-causes-of-death      
 2. Health expenditure:     
@@ -47,13 +47,18 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
 
 # Conclusions 
 
-## H1
+### H1
 
-## H2
+### H2
 
 
 # Short description of how to run the code
-
-The notebook file uses relative paths to load data so make sure that data is stored in //.
+**1**.Firstly, please clone this repository into your local machine  
+  **OR**  
+You can download ’Datasources’ and the files under this directory &  IS597 Health and death.ipynb & IS597 Health and death.py. Make sure the path of each file is correct since we use the relative path.   
+    
+**2**. To have a clear visualization, please run IS597 Health and death.ipynb file    
+    
+**3**. To check the doctest and doctest with coverage, please run IS597 Health and death.py file  
 
 
