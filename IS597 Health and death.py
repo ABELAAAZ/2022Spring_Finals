@@ -14,7 +14,7 @@ import seaborn as sns
 from scipy.stats import pearsonr
 
 
-def getDataFrame(url:str)->pd.DataFrame:
+def getDataFrame(url: str) -> pd.DataFrame:
     """
       This function aims to download data from the website throng API
       :param url: the url of the dataset
@@ -30,7 +30,7 @@ def getDataFrame(url:str)->pd.DataFrame:
     return data
 
 
-def Integrity_Check(df:pd.DataFrame):
+def Integrity_Check(df: pd.DataFrame):
     """
        This function aims to give an overview of the dataframe.
 
@@ -49,13 +49,20 @@ def Integrity_Check(df:pd.DataFrame):
 
 
 # In[4]:
-def world_mortality_trend(all_data: pd.DataFrame)-> pd.DataFrame:
+def world_mortality_trend(all_data: pd.DataFrame) -> pd.DataFrame:
     """
     To present a line chart shows the global death rate(the number of death per 1000 population) trend from 2000 to 2019.
     Here, we calculate the total number of death all over the world, then divided by the population in the
     whole world which is calculated by the population of each country
     :param all_data: The dataframe contains death number and population of each country of each year from 2000 to 2019.
     :return: the dataframe after groupby.
+
+    >>> test_data = [['HTI',2015,9949318,211608],['HTI',2016,9953413,211300],['HTI',2017,99553231,300956],['LSO',2015,2018355,98354],['LSO',2016,2018355,95603],['LSO',2017,2018355,73283],['BWA',2015,1734387,15560],['BWA',2016,1775969,11247],['BWA',2017,1799472,79852]]
+
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum'])
+    >>> df_after=world_mortality_trend(df)
+    >>> round(df_after.loc[df_after['year'] == 2017,'death_per1000']).tolist()
+    [4.0]
         """
     worldly_mortality_trend = all_data.groupby(['year', 'countryCode'], as_index=False)[['population', 'deathNum']].agg(
         {'population': np.max, 'deathNum': np.sum})
@@ -82,30 +89,45 @@ def world_mortality_trend(all_data: pd.DataFrame)-> pd.DataFrame:
 
 
 # In[5]:
-def ratetrend_incomegroup(dataset: pd.DataFrame)-> pd.DataFrame:
+def ratetrend_incomegroup(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Present the global death rate of the 4 income groups from 2000-2019.
     death rate:the number of death per 1000 population
     :param dataset:The dataframe contains death number and population of each country of each year from 2000 to 2019.
                    Also contains the label:incomeGroup
     :return:  the dataframe after groupby/ pivot.
+    >>> test_data = [['HTI',2015,9949318,211608,'L'],['HTI',2016,9953413,211300,'L'],['HTI',2017,99553231,300956,'L'],['LSO',2015,2018355,98354,'L'],['LSO',2016,2018355,95603,'L'],['LSO',2017,2018355,73283,'L'],['BWA',2015,1734387,15560,'H'],['BWA',2016,1775969,11247,'H'],['BWA',2017,1799472,79852,'H']]
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup'])
+    >>> df_after=ratetrend_incomegroup(df)
+    >>> '..' in df_after['incomeGroup']
+    False
+    >>> round(df_after.loc[df_after['incomeGroup'] == 'L' ,'death_per1000'],2).tolist()
+    [25.9, 25.64, 3.68]
+
     """
     causebyincome = \
-    dataset.sort_values(['deathNum'], ascending=False).groupby(['incomeGroup', 'year', 'countryCode'], as_index=False)[
-        ['population', 'deathNum']].agg({'population': np.max, 'deathNum': np.sum})
+        dataset.sort_values(['deathNum'], ascending=False).groupby(['incomeGroup', 'year', 'countryCode'],
+                                                                   as_index=False)[
+            ['population', 'deathNum']].agg({'population': np.max, 'deathNum': np.sum})
     causebyincome = causebyincome.groupby(['incomeGroup', 'year'], as_index=False)[['population', 'deathNum']].agg(
         {'population': np.sum, 'deathNum': np.sum})
     causebyincome['death_per1000'] = causebyincome['deathNum'] / causebyincome['population'] * 1000
     causebyincome = causebyincome[causebyincome['incomeGroup'] != '..']
     return causebyincome
 
+
 # In[6]:
-def Topdeathtype_incomegroup_year(dataset: pd.DataFrame, year:int) ->pd.DataFrame:
+def Topdeathtype_incomegroup_year(dataset: pd.DataFrame, year: int) -> pd.DataFrame:
     """
     To present a bar chart to show the distribution of three Mortality type in four incomegroups.
     :param dataset: The dataframe contains death number, incomegroup label, year label, and Mortality type label.
     :param year: determine the year that going to be analyzed.
     :return:the dataframe after selection and groupby...
+    >>> test_data = [['HTI',2015,9949318,211608,'L','noncommunicable'],['HTI',2015,9949318,211300,'L','communicable'],['HTI',2015,9949318,300956,'L','Injuries'],['LSO',2015,2018355,98354,'L','noncommunicable'],['LSO',2016,2018355,95603,'L','communicable'],['LSO',2017,2018355,73283,'L','Injuries'],['BWA',2015,1734387,15560,'H','noncommunicable'],['BWA',2015,1775969,11247,'H','communicable'],['BWA',2015,1799472,79852,'H','Injuries']]
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup','mortality_type'])
+    >>> df_after=Topdeathtype_incomegroup_year(df,2015)
+    >>> df_after.query('incomeGroup == ["L"]').values
+    array([[30.24890751, 21.23763659, 25.89993894]])
     """
     causebyincome = dataset[(dataset['year'] == year)].sort_values(['deathNum'], ascending=False).groupby(
         ['incomeGroup', 'mortality_type', 'countryCode'], as_index=False)[['population', 'deathNum']].agg(
@@ -133,6 +155,10 @@ def deathtypetrend(dataset: pd.DataFrame, income_group: str = 'ALL') -> pd.DataF
     :param dataset: the compliant dataframe
     :param income_group: one of the four types of income group(H,UM,LM,L)
     :return: the dataframe after selection and groupby...
+    >>> test_data = [['HTI',2015,9949318,211608,'L','noncommunicable'],['HTI',2015,9949318,211300,'L','communicable'],['HTI',2015,9949318,300956,'L','Injuries'],['LSO',2015,2018355,98354,'L','noncommunicable'],['LSO',2016,2018355,95603,'L','communicable'],['LSO',2017,2018355,73283,'L','Injuries'],['BWA',2015,1734387,15560,'H','noncommunicable'],['BWA',2015,1775969,11247,'H','communicable'],['BWA',2015,1799472,79852,'H','Injuries']]
+    >>> df = pd.DataFrame(test_data,columns=['countryCode','year','population','deathNum','incomeGroup','mortality_type'])
+    >>> df_after_ALL=deathtypetrend(df)
+    >>> df_after_ALL
     """
 
     if income_group == 'ALL':
@@ -153,10 +179,11 @@ def deathtypetrend(dataset: pd.DataFrame, income_group: str = 'ALL') -> pd.DataF
                         figsize=(10, 7), legend=True, xticks=(range(2000, 2020, 1)))
     return causebyincome1
 
+
 # In[7]:
 
 
-def Topcause_year(dataset: pd.DataFrame, year:int, income_group: str= 'All', category: str= 'All')-> pd.DataFrame:
+def Topcause_year(dataset: pd.DataFrame, year: int, income_group: str = 'All', category: str = 'All') -> pd.DataFrame:
     """
     To present a bar chart to show  10 leading cause of death in descending order of one specific year, ranking by the
     number of deaths.
@@ -234,7 +261,6 @@ def Topcause_trend(dataset: pd.DataFrame, year: int, income_group: str = 'All', 
     return df1
 
 
-
 # In[10]:
 def lineplot_time(HealthOutcomeData):
     """
@@ -293,9 +319,9 @@ def effectOfexp2015before(data, col, region):
         return
     cleaned = data.loc[
         (data["Year"] == 2000) | (data["Year"] == 2001) | (data["Year"] == 2002) | (data["Year"] == 2003) | (
-                    data["Year"] == 2004) | (data["Year"] == 2005) | (data["Year"] == 2006) | (data["Year"] == 2007) | (
-                    data["Year"] == 2008) | (data["Year"] == 2009) | (data["Year"] == 2010) | (data["Year"] == 2011) | (
-                    data["Year"] == 2012) | (data["Year"] == 2013) | (data["Year"] == 2014)]
+                data["Year"] == 2004) | (data["Year"] == 2005) | (data["Year"] == 2006) | (data["Year"] == 2007) | (
+                data["Year"] == 2008) | (data["Year"] == 2009) | (data["Year"] == 2010) | (data["Year"] == 2011) | (
+                data["Year"] == 2012) | (data["Year"] == 2013) | (data["Year"] == 2014)]
     coefficient, pvalue = pearsonr(cleaned[cleaned['Region'] == region]['che_gdp'],
                                    cleaned[cleaned['Region'] == region][col])
     return coefficient, pvalue
@@ -312,7 +338,7 @@ def effectOfexp2015after(data, col, region):
                   'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         cleaned = data.loc[
             (data["Year"] == 2015) | (data["Year"] == 2016) | (data["Year"] == 2017) | (data["Year"] == 2018) | (
-                        data["Year"] == 2019)]
+                    data["Year"] == 2019)]
         coefficient, pvalue = pearsonr(cleaned[cleaned['Region'] == region]['che_gdp'],
                                        cleaned[cleaned['Region'] == region][col])
         return coefficient, pvalue
@@ -354,7 +380,6 @@ if __name__ == '__main__':
                                        right_on=['country', 'year'])  # inner join
     countryInfoAll = countryInfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp']]
 
-
     # In[30]:
 
     global_data_1 = global_data.rename(columns={"DIM_COUNTRY_CODE": "countryCode",
@@ -374,7 +399,7 @@ if __name__ == '__main__':
     global_data_1['mortality_type'] = None
     global_data_1.loc[global_data_1['diseaseCode'] < 600, 'mortality_type'] = 'communicable'
     global_data_1.loc[(global_data_1['diseaseCode'] > 600) & (
-                global_data_1['diseaseCode'] < 1510), 'mortality_type'] = 'noncommunicable'
+            global_data_1['diseaseCode'] < 1510), 'mortality_type'] = 'noncommunicable'
     global_data_1.loc[global_data_1['diseaseCode'] > 1510, 'mortality_type'] = 'Injuries'
 
     # In[31]:
@@ -464,7 +489,7 @@ if __name__ == '__main__':
     # In[44]:
 
     Under5_Mortality_1[(Under5_Mortality_1['TimeDim'] == 2010) & (Under5_Mortality_1['SpatialDimType'] == "COUNTRY") & (
-                Under5_Mortality_1['Dim1'] == "BTSX")][['NumericValue', 'SpatialDim']]
+            Under5_Mortality_1['Dim1'] == "BTSX")][['NumericValue', 'SpatialDim']]
 
     # In[45]:
 
@@ -516,7 +541,7 @@ if __name__ == '__main__':
     # In[52]:
 
     InfoAll2015_ = InfoAll.loc[(InfoAll["Year"] == 2015) | (InfoAll["Year"] == 2016) | (InfoAll["Year"] == 2017) | (
-                InfoAll["Year"] == 2018) | (InfoAll["Year"] == 2019)]
+            InfoAll["Year"] == 2018) | (InfoAll["Year"] == 2019)]
     d = InfoAll2015_[['Region', 'Year', 'che_gdp']]
     d = d.dropna()
     d = d.pivot_table(index='Region', columns='Year', values='che_gdp', aggfunc='mean')
