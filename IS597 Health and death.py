@@ -238,10 +238,8 @@ def Topcause_trend(dataset: pd.DataFrame, year: int, income_group: str = 'All', 
 # In[10]:
 def lineplot_time(HealthOutcomeData):
     """
-    :param HealthOutcomeData: data set of health outcome data: Under5_Mortality, LifeExpectancy
-    :return:
-
-
+    :param HealthOutcomeData: data set of health outcome data: can be Under5_Mortality or LifeExpectancy
+    :return: a lineplot that shows the trend over years
     """
     b = HealthOutcomeData[(HealthOutcomeData['Dim1'] == 'BTSX') & (HealthOutcomeData['SpatialDimType'] == 'REGION')][
         ['TimeDim', 'NumericValue', 'SpatialDim']]
@@ -256,10 +254,10 @@ def lineplot_time(HealthOutcomeData):
 # In[11]:
 def formatWithSex(name, df):
     """
-    only applies to life expectancy and Under5_Mortality
-    :param name: reformat with sex, pivot that column
-    :param df:
-    :return:
+    applies to life expectancy and Under5_Mortality
+    :param name: the name of the column that needs to be reformat, pivot that column
+    :param df: the target data set
+    :return: the reformatted data set
     """
     df = df[df['SpatialDimType'] == 'COUNTRY']
     df = df[['SpatialDim', 'TimeDim', 'Dim1', 'NumericValue']]
@@ -276,6 +274,11 @@ def formatWithSex(name, df):
 
 
 def formatWithoutSex(df):
+    """
+    only applies to maternal mortality rate
+    :param df: the target data set
+    :return: the reformatted data set
+    """
     df = df[df['SpatialDimType'] == 'COUNTRY']
     df = df[['SpatialDim', 'TimeDim', 'NumericValue']]
     df = df.rename(columns={"SpatialDim": "countrycode", "TimeDim": "year", "NumericValue": 'MaternalMortalityRatio'})
@@ -288,6 +291,13 @@ def formatWithoutSex(df):
 
 
 def effectOfexp2015before(data, col, region):
+    """
+    correlation before 2015
+    :param data: data set that contains MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy information
+    :param col: the corresponding MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy column, to calculate the correlation between che_gdp and the input corresponded column
+    :param region: one of the region
+    :return: coefficient, pvalue
+    """
     if region not in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                       'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         return
@@ -308,6 +318,13 @@ def effectOfexp2015before(data, col, region):
 # year: before 2015 in Sub-Saharan Africa, 1 percent increase in health expenditure per capita improve life expectancy by 0.06 percent.
 # in 2019: sub-Saharan Africa, 1 percent increase in health expenditure per capita improve life expectancy by 0.06 percent.
 def effectOfexp2015after(data, col, region):
+    """
+    correlation after 2015
+    :param data: data set that contains MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy information
+    :param col: the corresponding MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy column, to calculate the correlation between che_gdp and the input corresponded column
+    :param region: one of the region
+    :return: coefficient, pvalue
+    """
     if region in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                   'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         cleaned = data.loc[
@@ -319,8 +336,6 @@ def effectOfexp2015after(data, col, region):
     else:
         return
 
-
-# effectOfexp(MaternalMortality_clean,'MaternalMortalityRatio')
 
 
 # In[25]:
