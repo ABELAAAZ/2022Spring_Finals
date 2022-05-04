@@ -29,6 +29,9 @@ Middle East & North Africa; Middle East & North Africa; South Asia; Sub-Saharan 
 # Short description of the problem solved
 The big topic is health-related, from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
 
+The Impact of Health Expenditures on Health Outcomes in Sub-Saharan Africa: https://journals.sagepub.com/doi/pdf/10.1177/0169796X19826759
+
+
 ## Data sources:
 1. Global cause of death   
 API:https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates/ghe-leading-causes-of-death      
@@ -57,7 +60,8 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
   **OR**  
 You can download ’Datasources’ and the files under this directory &  IS597 Health and death.ipynb & IS597 Health and death.py. Make sure the path of each file is correct since we use the relative path.   
     
-**2**. To have a clear visualization, please run IS597 Health and death.ipynb file    
+**2**. To have a clear visualization for Hypothesis 1, please run IS597 Health and death.ipynb file
+**3**. To have a clear visualization for Hypothesis 2, please run IS597 Health and death.ipynb file
     
 **3**. To check the doctest and doctest with coverage, please run IS597 Health and death.py file  
 
