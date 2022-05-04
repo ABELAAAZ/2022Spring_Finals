@@ -7,23 +7,37 @@ Yanying Yu/ ABELAAAZ
 Shufan Ming/ Michelle-Mings
 
 # Assumptions 
-Region 固定的
-Income group 每年有变化     提供 resource
-Mortality type 固定的
+**Seven regions**  — Provided by The World Bank. Assume not modified.    
+East Asia & Pacific; Europe & Central Asia; Latin America & Caribbean;    
+Middle East & North Africa; Middle East & North Africa; South Asia; Sub-Saharan Africa    
+        
+**Four income group** — Provided by The World Bank, changes every year. Adopt using the classification of that year.   
+1.High  2.Upper-middle  3.Lower-middle  4.Low      
+	
+**Three types of Mortality**  — Provided by World Health Organization (WHO). Assume not modified.      
+   
+1.communicable 2.noncommunicable 3.injuries.       
+			
+**Diseases code** — provided by WHO Global Health Estimates (GHE). Assume not modified.      
+    
+
+
+
+
 
 
 # Short description of the problem solved
 The big topic is health-related, from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
 
 ## Data source:
-1. Global cause of death 
-API:https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates/ghe-leading-causes-of-death   
-2. Health expenditure: 
-API: GHO OData API 
-3. Country income group, Country Region, Mortality categories,
-World Bank Country and Lending Groups
-Global health estimates: Leading causes of death
-https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html
+1. Global cause of death   
+API:https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates/ghe-leading-causes-of-death      
+2. Health expenditure:     
+API: https://www.who.int/data/gho/info/gho-odata-api    
+3. Country income group, Country Region, Mortality categories,    
+https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups    
+https://www.who.int/data/gho/data/themes/mortality-and-global-health-estimates/ghe-leading-causes-of-death    
+https://datatopics.worldbank.org/world-development-indicators/the-world-by-income-and-region.html    
 
 ## Hypothesis
 H1:Do the Global patterns of mortality by income group all over the world aligned with the previous work? (Patterns: i.e., Trend of mortality/ Cause Distribution/ Leading cause of death
