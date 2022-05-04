@@ -324,6 +324,7 @@ def effectOfexp2015before(data, col, region):
     :param region: one of the region
     :return: coefficient, pvalue
     """
+
     if region not in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                       'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
         return
@@ -332,17 +333,10 @@ def effectOfexp2015before(data, col, region):
                 data["Year"] == 2004) | (data["Year"] == 2005) | (data["Year"] == 2006) | (data["Year"] == 2007) | (
                 data["Year"] == 2008) | (data["Year"] == 2009) | (data["Year"] == 2010) | (data["Year"] == 2011) | (
                 data["Year"] == 2012) | (data["Year"] == 2013) | (data["Year"] == 2014)]
-    coefficient, pvalue = pearsonr(cleaned[cleaned['Region'] == region]['che_gdp'],
-                                   cleaned[cleaned['Region'] == region][col])
+    coefficient, pvalue = pearsonr(cleaned[cleaned['Region'] == region]['che_gdp'],cleaned[cleaned['Region'] == region][col])
     return coefficient, pvalue
 
 
-# In[14]:
-
-
-# life expectancy: Europe & Central Asia positively correlated; Sub-Saharan Africa negatively correlated: differ in regions:
-# year: before 2015 in Sub-Saharan Africa, 1 percent increase in health expenditure per capita improve life expectancy by 0.06 percent.
-# in 2019: sub-Saharan Africa, 1 percent increase in health expenditure per capita improve life expectancy by 0.06 percent.
 def effectOfexp2015after(data, col, region):
     """
     correlation after 2015
@@ -373,14 +367,10 @@ if __name__ == '__main__':
     global_data = getDataFrame(
         'https://frontdoor-l4uikgap6gz3m.azurefd.net/DEX_CMS/GHE_FULL?&$orderby=VAL_DEATHS_RATE100K_NUMERIC%20desc&$select=DIM_COUNTRY_CODE,DIM_GHECAUSE_CODE,DIM_GHECAUSE_TITLE,DIM_YEAR_CODE,DIM_SEX_CODE,DIM_AGEGROUP_CODE,VAL_DALY_COUNT_NUMERIC,VAL_DEATHS_COUNT_NUMERIC,ATTR_POPULATION_NUMERIC,VAL_DALY_RATE100K_NUMERIC,VAL_DEATHS_RATE100K_NUMERIC&$filter=FLAG_RANKABLE%20eq%201%20and%20DIM_SEX_CODE%20eq%20%27BTSX%27%20and%20DIM_AGEGROUP_CODE%20eq%20%27ALLAges%27')
 
-
-
     incomegroup = pd.read_excel("datasources/income group.xlsx", sheet_name='Sheet1')
     region = pd.read_csv("datasources/country_region.csv")[['Country', 'Region']]
     healthExp = pd.read_excel("datasources/healthExp_data.xlsx", sheet_name='cleaned')
     healthExp = healthExp[['country', 'year', 'che_gdp']]
-
-
 
     incomegroup = pd.melt(incomegroup, id_vars=['CountryCode', 'CountryName'],
                           value_vars=[2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
@@ -388,14 +378,21 @@ if __name__ == '__main__':
                           value_name='incomeGroup')
     # left join with region table.
 
-    countryInfo = incomegroup.merge(region, left_on='CountryName', right_on='Country')  # inner join
-    countryInfo = countryInfo[['Country', 'CountryCode', 'Region', 'Year', 'incomeGroup']]
     # merge datasets based on two columns:
-    countryInfoAll = countryInfo.merge(healthExp, left_on=['Country', 'Year'],
-                                       right_on=['country', 'year'])  # inner join
+    countryInfo = incomegroup.merge(region, left_on='CountryName', right_on='Country')
+    countryInfo = countryInfo[['Country', 'CountryCode', 'Region', 'Year', 'incomeGroup']]
+    countryInfoAll = countryInfo.merge(healthExp, left_on=['Country', 'Year'], right_on=['country', 'year'])
     countryInfoAll = countryInfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp']]
+    countryInfoAll = countryInfoAll.astype({"Year":int})
+    # reformatting data set for further analysis
+    Under5_Mortality = formatWithSex('Under5_Mortality', Under5_Mortality_1)
+    LifeExpectancy = formatWithSex('LifeExpectancy', LifeExpectancy_1)
+    MaternalMortalityRatio = formatWithoutSex(MaternalMortalityRatio_1)
+    InfoAll = countryInfoAll.merge(LifeExpectancy, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
+    InfoAll = InfoAll.merge(Under5_Mortality, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'], how='left')
+    InfoAll = InfoAll.merge(MaternalMortalityRatio, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],how='left')
+    InfoAll = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX','LifeExpectancy_FMLE', 'LifeExpectancy_MLE', 'Under5_Mortality_BTSX', 'Under5_Mortality_FMLE','Under5_Mortality_MLE', 'MaternalMortalityRatio']]
 
-    # In[30]:
 
     global_data_1 = global_data.rename(columns={"DIM_COUNTRY_CODE": "countryCode",
                                                 "DIM_YEAR_CODE": "year",
@@ -492,18 +489,12 @@ if __name__ == '__main__':
     print(Topcause_year(global_data_1, 2004))
     print(Topcause_year(global_data_1, 2004, income_group='L', category='noncommunicable'))
 
-
     # Hypothesis 2
     # finding: the life expectancy is increasing over years
     lineplot_time(LifeExpectancy_1)
 
     # finding: the Under5_Mortality is decreasing over years
     lineplot_time(Under5_Mortality_1)
-
-    # reformatting data set for further analysis
-    Under5_Mortality = formatWithSex('Under5_Mortality', Under5_Mortality_1)
-    LifeExpectancy = formatWithSex('LifeExpectancy', LifeExpectancy_1)
-    MaternalMortalityRatio = formatWithoutSex(MaternalMortalityRatio_1)
 
     # finding: the average of Maternal Mortality Ratio over the world was decreasing over time
     plt.figure(figsize=(16, 8))
@@ -512,16 +503,6 @@ if __name__ == '__main__':
     sns.set(rc={"figure.figsize": (3, 4)})
     plt.show()
 
-    # reformatting data set
-    InfoAll = countryInfoAll.merge(LifeExpectancy, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],
-                                   how='left')
-    InfoAll = InfoAll.merge(Under5_Mortality, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],
-                            how='left')
-    InfoAll = InfoAll.merge(MaternalMortalityRatio, left_on=['CountryCode', 'Year'], right_on=['countrycode', 'year'],
-                            how='left')
-    InfoAll = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX',
-                       'LifeExpectancy_FMLE', 'LifeExpectancy_MLE', 'Under5_Mortality_BTSX', 'Under5_Mortality_FMLE',
-                       'Under5_Mortality_MLE', 'MaternalMortalityRatio']]
 
     # all data includes health expendure, three factors, year, incomegroup, and region for each country
     # anova table shows that all three factors were related to health expenditure, of which the region has the most significant correlation
@@ -531,7 +512,6 @@ if __name__ == '__main__':
     anova_table
 
     # correlation between independent Year and dependent var = che_gdp in Year 2019
-    InfoAll = InfoAll.astype({"Year": int})
     yearexp = InfoAll[['che_gdp', 'Year']].dropna()
     pearsonr(yearexp['che_gdp'], yearexp['Year'])
 
@@ -555,6 +535,7 @@ if __name__ == '__main__':
 
     # life Expectancy recorded data every five year. 2010, 2015, 2000, 2019.
     # drop nan before calculating correlation
+
     lifeExp_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'LifeExpectancy_BTSX']].dropna()
     Under5_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'Under5_Mortality_BTSX']].dropna()
     MaternalMortality_clean = InfoAll[['Country', 'Region', 'CountryCode', 'Year', 'incomeGroup', 'che_gdp', 'MaternalMortalityRatio']].dropna()
