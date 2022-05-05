@@ -23,8 +23,13 @@ Middle East & North Africa; Middle East & North Africa; South Asia; Sub-Saharan 
 # Short description of the problem solved
 The big topic is to observe the trend of health-related issues and , from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
 
-The Impact of Health Expenditures on Health Outcomes in Sub-Saharan Africa: https://journals.sagepub.com/doi/pdf/10.1177/0169796X19826759
-Global and regional causes of death: https://pubmed.ncbi.nlm.nih.gov/19776034/
+Global and regional causes of death:    
+https://pubmed.ncbi.nlm.nih.gov/19776034/         
+The Impact of Health Expenditures on Health Outcomes in Sub-Saharan Africa:    
+https://journals.sagepub.com/doi/pdf/10.1177/0169796X19826759         
+  
+
+Those two papers have more or less limitations: data is outdated. No clear data pre-processing explanations, So one of our purpose is to replicate the analysis in the paper to see whether we reach an agreement on their conclusions; and also whether the finding for one region, that patterns can be generalised to other regions as well    
 
 ## Data sources:
 1. Global cause of death   
