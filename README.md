@@ -46,10 +46,10 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
 
 ### The Global patterns of mortality all over the world match the conclusion of the paper 1 to some extents
 Other findings:
-1 Low income countries did a great job on communicable disease issue.
-2. There are major differences in the ranking of causes between high- and low-income countries
-3. An HIV pandemic occurred in 2007 in low-income countries with 7 years to come back to the normal level.
-4. IHD and Stroke cases surged in 2004 in upper-middle countries, leading to a mortality spike in the whole Upper-middle income countries
+1 Low income countries did a great job on communicable disease issue.    
+2. There are major differences in the ranking of causes between high- and low-income countries    
+3. An HIV pandemic occurred in 2007 in low-income countries with 7 years to come back to the normal level.    
+4. IHD and Stroke cases surged in 2004 in upper-middle countries, leading to a mortality spike in the whole Upper-middle income countries    
 
 
 ### The effect of Health Expenditure on Selected Health Outcomes
