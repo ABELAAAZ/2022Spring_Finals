@@ -55,9 +55,8 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
   **OR**  
 You can download ’Datasources’ and the files under this directory &  IS597 Health and death.ipynb & IS597 Health and death.py. Make sure the path of each file is correct since we use the relative path.   
     
-**2**. To have a clear visualization for Hypothesis 1, please run IS597 Health and death.ipynb file
-**3**. To have a clear visualization for Hypothesis 2, please run IS597 Health and death.ipynb file
-    
-**3**. To check the doctest and doctest with coverage, please run IS597 Health and death.py file  
+**2**. Run analysis_visualization.ipynb    
+
+**3**. To check the doctest and doctest with coverage, please see the functions.py file
 
 
