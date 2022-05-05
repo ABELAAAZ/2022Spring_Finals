@@ -206,11 +206,6 @@ def Topcause_year(dataset: pd.DataFrame, year: int, income_group: str = 'All', c
     >>> df_after_Low=Topcause_year(df,2015,income_group='L')
     >>> df_after_Low['diseaseName'].head(1).tolist()
     ['a']
-    >>> df_after_High_comm=Topcause_year(df,2015,income_group='H',category='Injuries')
-    >>> df_after_High_comm['diseaseName'].head(1).tolist()
-    >>> Topcause_year(global_data_1, 2004,'L')
-    ['c']
-
     """
     if income_group == 'All':
         incomegroup = ['H', 'L', 'UM', 'LM']
@@ -296,11 +291,24 @@ def Topcause_trend(dataset: pd.DataFrame, year: int, income_group: str = 'All', 
 
 
 # In[10]:
-def lineplot_time(HealthOutcomeData):
+def lineplot_time(HealthOutcomeData: pd.DataFrame):
     """
     :param HealthOutcomeData: data set of health outcome data: Under5_Mortality, LifeExpectancy
-    :return:
+    :return: reformatted data set
+    >>> a = [[24614321, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2015, 'SEX', 'MLE', None, None, None, None, None, None, '61.0', 61.03658, None, None, None, '2020-12-04T16:59:43.423+01:00', '2015', '2015-01-01T00:00:00+01:00', '2015-12-31T00:00:00+01:00'], [24614325, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2019, 'SEX', 'MLE', None, None, None, None, None, None, '63.3', 63.28709, None, None, None, '2020-12-04T16:59:43.533+01:00', '2019', '2019-01-01T00:00:00+01:00', '2019-12-31T00:00:00+01:00'], [24614313, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2000, 'SEX', 'MLE', None, None, None, None, None, None, '54.6', 54.57449, None, None, None, '2020-12-04T16:59:42.513+01:00', '2000', '2000-01-01T00:00:00+01:00', '2000-12-31T00:00:00+01:00'], [24614317, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2010, 'SEX', 'MLE', None, None, None, None, None, None, '59.6', 59.60036, None, None, None, '2020-12-04T16:59:43.013+01:00', '2010', '2010-01-01T00:00:00+01:00', '2010-12-31T00:00:00+01:00'], [24614329, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2000, 'SEX', 'FMLE', None, None, None, None, None, None, '55.4', 55.41726, None, None, None, '2020-12-04T16:59:43.61+01:00', '2000', '2000-01-01T00:00:00+01:00', '2000-12-31T00:00:00+01:00'], [24614333, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2010, 'SEX', 'FMLE', None, None, None, None, None, None, '60.3', 60.2972, None, None, None, '2020-12-04T16:59:43.72+01:00', '2010', '2010-01-01T00:00:00+01:00', '2010-12-31T00:00:00+01:00'], [24614337, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2015, 'SEX', 'FMLE', None, None, None, None, None, None, '62.3', 62.34584, None, None, None, '2020-12-04T16:59:43.847+01:00', '2015', '2015-01-01T00:00:00+01:00', '2015-12-31T00:00:00+01:00'], [24614341, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2019, 'SEX', 'FMLE', None, None, None, None, None, None, '63.2', 63.15551, None, None, None, '2020-12-04T16:59:43.927+01:00', '2019', '2019-01-01T00:00:00+01:00', '2019-12-31T00:00:00+01:00'], [24614345, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2000, 'SEX', 'BTSX', None, None, None, None, None, None, '55.0', 54.98949, None, None, None, '2020-12-04T16:59:44.053+01:00', '2000', '2000-01-01T00:00:00+01:00', '2000-12-31T00:00:00+01:00'], [24614349, 'WHOSIS_000001', 'COUNTRY', 'AFG', 'YEAR', 2010, 'SEX', 'BTSX', None, None, None, None, None, None, '59.9', 59.94055, None, None, None, '2020-12-04T16:59:44.18+01:00', '2010', '2010-01-01T00:00:00+01:00', '2010-12-31T00:00:00+01:00']]
+    >>> cols = ['Id', 'IndicatorCode', 'SpatialDimType', 'SpatialDim', 'TimeDimType', 'TimeDim', 'Dim1Type', 'Dim1', 'Dim2Type', 'Dim2', 'Dim3Type', 'Dim3', 'DataSourceDimType', 'DataSourceDim', 'Value', 'NumericValue', 'Low', 'High', 'Comments', 'Date', 'TimeDimensionValue', 'TimeDimensionBegin', 'TimeDimensionEnd']
+    >>> df = pd.DataFrame(a, columns = cols)
+    >>> lineplot_time("Under5_Mortality_1")
+    Traceback (most recent call last):
+    AttributeError: 'str' object has no attribute 'columns'
+    
+    >>> lineplot_time(df[['TimeDim']])
+    Traceback (most recent call last):
+    KeyError
+
     """
+    if ('TimeDim' not in HealthOutcomeData.columns) or ('NumericValue' not in HealthOutcomeData.columns) or ('SpatialDim' not in HealthOutcomeData.columns):
+        raise KeyError
     b = HealthOutcomeData[(HealthOutcomeData['Dim1'] == 'BTSX') & (HealthOutcomeData['SpatialDimType'] == 'REGION')][['TimeDim','NumericValue','SpatialDim']]
     a = b[b['SpatialDim'] != 'GLOBAL'] # no global value
     a = a.astype({"TimeDim": str})
@@ -313,13 +321,18 @@ def lineplot_time(HealthOutcomeData):
     plt.show()
 
 
+
 # In[11]:
-def formatWithSex(name, df):
+def formatWithSex(name: str, df: pd.DataFrame) -> pd.DataFrame:
     """
     only applies to life expectancy and Under5_Mortality
     :param name: reformat with sex, pivot that column
     :param df:
     :return:
+    >>> Under5_Mortality_1 = [[27818216, 'MDG_0000000007', 'REGION', 'AFR', 'YEAR', 1990, 'SEX','BTSX', None, None, None, None, None, None,'176.2 [172.72-180.17]', 176.20446, 172.71708, 180.16938, None, '2022-01-18T13:13:12.597+01:00', '1990','1990-01-01T00:00:00+01:00', '1990-12-31T00:00:00+01:00'],[27818217, 'MDG_0000000007', 'REGION', 'AFR', 'YEAR', 1990, 'SEX',  'FMLE', None, None, None, None, None, None, '167.03 [163.62-170.86]', 167.02559, 163.62235, 170.85607, None, '2022-01-18T13:13:12.613+01:00', '1990','1990-01-01T00:00:00+01:00', '1990-12-31T00:00:00+01:00'],[27818218, 'MDG_0000000007', 'REGION', 'AFR', 'YEAR', 1990, 'SEX', 'MLE', None, None, None, None, None, None,'184.95 [181.2-189.23]', 184.95174, 181.20198, 189.22685, None,'2022-01-18T13:13:12.63+01:00', '1990', '1990-01-01T00:00:00+01:00', '1990-12-31T00:00:00+01:00'],[27818219, 'MDG_0000000007', 'REGION', 'AFR', 'YEAR', 1991, 'SEX', 'BTSX', None, None, None, None, None, None, '174.86 [171.44-178.75]', 174.85804, 171.4446, 178.752, None,'2022-01-18T13:13:12.643+01:00', '1991','1991-01-01T00:00:00+01:00', '1991-12-31T00:00:00+01:00'],[27818220, 'MDG_0000000007', 'REGION', 'AFR', 'YEAR', 1991, 'SEX', 'FMLE', None, None, None, None, None, None, '165.7 [162.3-169.42]', 165.70279, 162.30395, 169.42294, None, '2022-01-18T13:13:12.66+01:00', '1991','1991-01-01T00:00:00+01:00', '1991-12-31T00:00:00+01:00']]
+    >>> type(formatWithSex('Under5_Mortality', Under5_Mortality_1)['year'][0])
+    Traceback (most recent call last):
+    TypeError: list indices must be integers or slices, not str
     """
     df = df[df['SpatialDimType'] == 'COUNTRY']
     df = df[['SpatialDim','TimeDim','Dim1','NumericValue']]
@@ -336,32 +349,40 @@ def formatWithSex(name, df):
 # In[12]:
 
 
-def formatWithoutSex(df):
+def formatWithoutSex(df: pd.DataFrame) -> pd.DataFrame:
     """
     only applies to maternal mortality rate
     :param df: the target data set
     :return: the reformatted data set
+    >>> MaternalMortalityRatio_1 = pd.DataFrame()
+    >>> formatWithoutSex(MaternalMortalityRatio_1)
+    Traceback (most recent call last):
+    KeyError: 'SpatialDimType'
     """
     df = df[df['SpatialDimType'] == 'COUNTRY']
-    df = df[['SpatialDim', 'TimeDim', 'NumericValue']]
-    df = df.rename(columns={"SpatialDim": "countrycode", "TimeDim": "year", "NumericValue": 'MaternalMortalityRatio'})
+    df = df[['SpatialDim','TimeDim','NumericValue']]
+    df = df.rename(columns={"SpatialDim":"countrycode", "TimeDim":"year", "NumericValue": 'MaternalMortalityRatio'})
     df = df.astype({"year": str})
-    df = df[['countrycode', 'year', 'MaternalMortalityRatio']]
+    df = df[['countrycode','year','MaternalMortalityRatio']]
     return df
 
 
-def effectOfexp2015before(data, col, region):
+def effectOfexp2015before(data: pd.DataFrame,col: str,region: str) -> tuple:
     """
     correlation before 2015
     :param data: data set that contains MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy information
     :param col: the corresponding MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy column, to calculate the correlation between che_gdp and the input corresponded column
     :param region: one of the region
     :return: coefficient, pvalue
+    >>> Under5_clean = [['Afghanistan', 'South Asia', 'AFG', 2002, 'L', 9.44338989,121.06367],['Afghanistan', 'South Asia', 'AFG', 2003, 'L', 8.941258430000001,116.91188],['Afghanistan', 'South Asia', 'AFG', 2004, 'L', 9.80847359,112.63116],['Afghanistan', 'South Asia', 'AFG', 2005, 'L', 9.94828987, 108.38065],['Afghanistan', 'South Asia', 'AFG', 2006, 'L', 10.62276554,104.11641], ['Afghanistan', 'South Asia', 'AFG', 2007, 'L', 9.90467453, 99.89215],['Afghanistan', 'South Asia', 'AFG', 2008, 'L',  10.256495480000002, 95.71579],['Afghanistan', 'South Asia', 'AFG', 2009, 'L', 9.81848717, 91.68161],['Afghanistan', 'South Asia', 'AFG', 2010, 'L', 8.56967163,  87.75619],['Afghanistan', 'South Asia', 'AFG', 2011, 'L', 8.561906809999998, 83.97012]]
+    >>> cols = ['Country','Region','CountryCode','Year','incomeGroup','che_gdp', 'Under5_Mortality_BTSX']
+    >>> Under5_clean = pd.DataFrame(Under5_clean, columns = cols)
+    >>> effectOfexp2015before(Under5_clean,'Under5_Mortality_BTSX','Europe & Central')
+    (None, None)
     """
-
     if region not in ['East Asia & Pacific', 'Europe & Central Asia', 'Latin America & Caribbean',
                       'Middle East & North Africa', 'North America', 'South Asia', 'Sub-Saharan Africa']:
-        return
+        return None, None
     data = data.copy().astype({"Year":int})
     cleaned = data.loc[
         (data["Year"] == 2000) | (data["Year"] == 2001) | (data["Year"] == 2002) | (data["Year"] == 2003) | (
@@ -372,7 +393,7 @@ def effectOfexp2015before(data, col, region):
     return coefficient, pvalue
 
 
-def effectOfexp2015after(data, col, region):
+def effectOfexp2015after(data: pd.DataFrame,col: str,region: str) -> tuple:
     """
     correlation after 2015
     :param data: data set that contains MaternalMortalityRatio, or Under5_Mortality, or LifeExpectancy information
@@ -391,4 +412,3 @@ def effectOfexp2015after(data, col, region):
         return coefficient, pvalue
     else:
         return
-
