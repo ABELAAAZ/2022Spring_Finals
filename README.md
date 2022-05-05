@@ -53,7 +53,7 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
 # Short description of how to run the code
 **1**.Firstly, please clone this repository into your local machine  
   **OR**  
-You can download ’Datasources’ and the files under this directory &  IS597 Health and death.ipynb & IS597 Health and death.py. Make sure the path of each file is correct since we use the relative path.   
+You can download ’Datasources’ and the files under this directory &  functions.py & analysis_visualization.ipynb. Make sure the path of each file is correct since we use the relative path.   
     
 **2**. Run analysis_visualization.ipynb    
 
