@@ -19,18 +19,12 @@ Middle East & North Africa; Middle East & North Africa; South Asia; Sub-Saharan 
 1.communicable 2.noncommunicable 3.injuries.       
 			
 **Diseases code** — provided by WHO Global Health Estimates (GHE). Assume not modified.      
-    
-
-
-
-
-
 
 # Short description of the problem solved
-The big topic is health-related, from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
+The big topic is to observe the trend of health-related issues and , from the perspective of life expectancy, mortality in different age groups, and cause of death and its relations to income groups, regions, and health expenditures. Our work is based on two previous publications which are listed below:
 
 The Impact of Health Expenditures on Health Outcomes in Sub-Saharan Africa: https://journals.sagepub.com/doi/pdf/10.1177/0169796X19826759
-
+Global and regional causes of death: https://pubmed.ncbi.nlm.nih.gov/19776034/
 
 ## Data sources:
 1. Global cause of death   
@@ -52,8 +46,9 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
 
 ### H1
 
-### H2
-
+### The effect of Health Expenditure on Selected Health Outcomes
+**1**. Steady increases in health expenditures over time have the tendency to improve health outcomes in most regions/countries. Both under-five mortality and maternal mortality show a decreasing trend, meanwhile the average life expectancy is increasing (with the exception in Sub-Saharan Africa and South Asia). 
+**2**. After 2015, health expenditure continue to exert a positive impact on all three health outcomes. 
 
 # Short description of how to run the code
 **1**.Firstly, please clone this repository into your local machine  
