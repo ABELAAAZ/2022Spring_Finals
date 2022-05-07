@@ -4,7 +4,17 @@
 
 Team members：      
 Yanying Yu/ ABELAAAZ  
-Shufan Ming/ Michelle-Mings
+Shufan Ming/ Michelle-Mings    
+
+# Short description of how to run the code
+**1**.Firstly, please clone this repository into your local machine  
+  **OR**  
+You can download ’Datasources’ and the files under this directory &  functions.py & analysis_visualization.ipynb. Make sure the path of each file is correct since we use the relative path.   
+    
+**2**. Run analysis_visualization.ipynb    
+
+**3**. To check the doctest and doctest with coverage, please see the functions.py file
+
 
 # Assumptions 
 **Seven regions**  — Provided by The World Bank. Assume not modified.    
@@ -47,7 +57,7 @@ H1:Do the Global patterns of mortality by income group all over the world aligne
 H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive and significant impact on all three health outcomes (life expectancy, under-five mortality, and maternal mortality), for other regions globally. (1996-2015)
 
 
-# Conclusions 
+# Conclusions(analysis_visualization.ipynb and presentation.pdf)         
  
 ### The Global patterns of mortality all over the world match the conclusion of the paper 1 to some extents    
 Other findings:    
@@ -61,13 +71,5 @@ Other findings:
 **1**. Steady increases in health expenditures over time have the tendency to improve health outcomes in most regions/countries. Both under-five mortality and maternal mortality show a decreasing trend, meanwhile the average life expectancy is increasing (with the exception in Sub-Saharan Africa and South Asia).    
 **2**. After 2015, health expenditure continue to exert a positive impact on all three health outcomes. 
 
-# Short description of how to run the code
-**1**.Firstly, please clone this repository into your local machine  
-  **OR**  
-You can download ’Datasources’ and the files under this directory &  functions.py & analysis_visualization.ipynb. Make sure the path of each file is correct since we use the relative path.   
-    
-**2**. Run analysis_visualization.ipynb    
-
-**3**. To check the doctest and doctest with coverage, please see the functions.py file
 
 
