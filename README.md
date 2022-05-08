@@ -57,17 +57,26 @@ H1:Do the Global patterns of mortality by income group all over the world aligne
 H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive and significant impact on all three health outcomes (life expectancy, under-five mortality, and maternal mortality), for other regions globally. (1996-2015)
 
 
-# Conclusions(analysis_visualization.ipynb and presentation.pdf)         
+# Conclusions  (Please see the details in analysis_visualization.ipynb and 597Final-presentation.pdf)         
  
-### The Global patterns of mortality all over the world match the conclusion of the paper 1 to some extents    
-Other findings:    
+## The Global patterns of mortality all over the world match the conclusion of the paper 1 to some extents                     		
+**1.Trend of mortality:**<br/>			
+**1.1**True: There is a growing importance of non-communicable disease all over the world.<br/>
+**1.2**False:There is a growing importance of noncommunicable diseases in most low- and middle-income countries since 2004. <br/>	            		
+**2.Cause Distribution:**<br/>		
+**2.1**True: The contribution of three mortality types in 2004 is noncommunicable 60%, communicable 30%, injuries 10%.<br/>	          		
+**3.leading cause of death:**<br/>
+**3.1**True:Cardiovascular diseases are the leading cause of death,Infectious and parasitic diseases are the next leading cause, followed by cancers in 2004 all over the world.		         
+**3.2**False: Same top 10 leading causes-of-deaths in the specific income group.<br/>	    
+
+#### Other findings:    
 1 Low income countries did a great job on communicable disease issue.    
 2. There are major differences in the ranking of causes between high- and low-income countries    
 3. An HIV pandemic occurred in 2007 in low-income countries with 7 years to come back to the normal level.    
 4. IHD and Stroke cases surged in 2004 in upper-middle countries, leading to a mortality spike in the whole Upper-middle income countries    
 
 
-### The effect of Health Expenditure on Selected Health Outcomes
+## The effect of Health Expenditure on Selected Health Outcomes
 **1**. Steady increases in health expenditures over time have the tendency to improve health outcomes in most regions/countries. Both under-five mortality and maternal mortality show a decreasing trend, meanwhile the average life expectancy is increasing (with the exception in Sub-Saharan Africa and South Asia).    
 **2**. After 2015, health expenditure continue to exert a positive impact on all three health outcomes. 
 
