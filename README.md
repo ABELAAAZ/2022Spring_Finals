@@ -81,3 +81,5 @@ H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive an
 **2. After 2015, steady increases in health expenditures over time have the tendency to improve all three health outcomes in most regions/countries, with the exception in Sub-Saharan Africa, East Asia & Pacific, and South Asia.**<br/>    
 **2.1**. After 2015, health expenditure continue to exert a positive impact on under-five mortality and maternal mortality all over the world, they both show decreasing trends, except for Sub-Saharan Africa and South Asia.<br/>
 **2.2**. Meanwhile, the average life expectancy is increasing, except for Sub-Saharan Africa, East Asia & Pacific, and South Asia.<br/>
+
+Other details please see the markdown cells in analysis_visualization.ipynb
