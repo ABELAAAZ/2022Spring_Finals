@@ -57,7 +57,7 @@ H1:Do the Global patterns of mortality by income group all over the world aligne
 H2:As in Sub-Saharan Africa, we expect health expenditure to exert a positive and significant impact on all three health outcomes (life expectancy, under-five mortality, and maternal mortality), for other regions globally. (1996-2015)
 
 
-# Conclusions  (Please see the details in analysis_visualization.ipynb and 597Final-presentation.pdf)         
+# Conclusions<br/>  (Please see the details in analysis_visualization.ipynb and 597Final-presentation.pdf)         
  
 ## The Global patterns of mortality all over the world match the conclusion of the paper 1 to some extents                     		
 **1.Trend of mortality:**<br/>			
